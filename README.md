@@ -34,8 +34,6 @@ Next button will change the view and also changes the corresponding audio.
 Check video in below link to check how to test the application
 [![IMAGE ALT TEXT HERE](https://github.com/Kirancd/ExoPlayer-1/blob/release-v2/youtubeVideo.png)](https://www.youtube.com/watch?v=0cpXvyRxskM&feature=youtu.be)
 
-https://www.youtube.com/watch?v=0cpXvyRxskM&feature=youtu.be
-
 # ExoPlayer #
 
 ExoPlayer is an application level media player for Android. It provides an
