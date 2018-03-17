@@ -589,7 +589,7 @@ public class PlayerActivity extends Activity
             return;
         }
 
-        for (int i = 0; i < mappedTrackInfo.length; i++) {
+       /* for (int i = 0; i < mappedTrackInfo.length; i++) {
             TrackGroupArray trackGroups = mappedTrackInfo.getTrackGroups(i);
             if (trackGroups.length != 0) {
                 Button button = new Button(this);
@@ -612,7 +612,7 @@ public class PlayerActivity extends Activity
                 button.setOnClickListener(this);
                 debugRootView.addView(button, debugRootView.getChildCount() - 1);
             }
-        }
+        }*/
     }
 
     private void showControls() {
