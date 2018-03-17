@@ -56,7 +56,7 @@ public class SimpleExoPlayer implements ExoPlayer, Player.VideoComponent, Player
   @Deprecated
   public interface VideoListener extends com.google.android.exoplayer2.video.VideoListener {}
 
-  private static final String TAG = "SimpleExoPlayer";
+  private static final String TAG = "Kiran-SimpleExoPlayer";
 
   protected final Renderer[] renderers;
 
@@ -158,6 +158,22 @@ public class SimpleExoPlayer implements ExoPlayer, Player.VideoComponent, Player
       }
     }
   }
+
+// to optimize performance
+  public void changeDimension() {
+    Log.v(TAG,"changeDimension");
+    this.videoScalingMode = videoScalingMode;
+    for (Renderer renderer : renderers) {
+      if (renderer.getTrackType() == C.TRACK_TYPE_VIDEO) {
+        player
+                .createMessage(renderer)
+                .setType(C.MSG_SET_SCALING_MODE_CHANGE)
+                .setPayload(videoScalingMode)
+                .send();
+      }
+    }
+  }
+
 
   @Override
   public @C.VideoScalingMode int getVideoScalingMode() {

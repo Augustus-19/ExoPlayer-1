@@ -21,6 +21,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,6 +61,7 @@ import java.util.Arrays;
   private CheckedTextView defaultView;
   private CheckedTextView enableRandomAdaptationView;
   private CheckedTextView[][] trackViews;
+  private static String TAG = "Kiran";
 
   /**
    * @param selector The track selector.
@@ -70,6 +72,38 @@ import java.util.Arrays;
       TrackSelection.Factory adaptiveTrackSelectionFactory) {
     this.selector = selector;
     this.adaptiveTrackSelectionFactory = adaptiveTrackSelectionFactory;
+  }
+
+  public void changeAudioTrack(MappedTrackInfo trackInfo,
+                               int rendererIndex, int trackIdx){
+    Log.d(TAG, "changeAudioTrack: " + rendererIndex + " trackIndex:" + trackIdx);
+    this.trackInfo = trackInfo;
+    this.rendererIndex = rendererIndex;
+
+    trackGroups = trackInfo.getTrackGroups(rendererIndex);
+    trackGroupsAdaptive = new boolean[trackGroups.length];
+    for (int i = 0; i < trackGroups.length; i++) {
+      trackGroupsAdaptive[i] = adaptiveTrackSelectionFactory != null
+              && trackInfo.getAdaptiveSupport(rendererIndex, i, false)
+              != RendererCapabilities.ADAPTIVE_NOT_SUPPORTED
+              && trackGroups.get(i).length > 1;
+    }
+    isDisabled = selector.getRendererDisabled(rendererIndex);
+    override = selector.getSelectionOverride(rendererIndex, trackGroups);
+
+
+    isDisabled = false;
+    if (!trackGroupsAdaptive[trackIdx] || override == null
+            || override.groupIndex != trackIdx) {
+      override = new SelectionOverride(FIXED_FACTORY, trackIdx, 0);
+    }
+
+    selector.setRendererDisabled(rendererIndex, isDisabled);
+    if (override != null) {
+      selector.setSelectionOverride(rendererIndex, trackGroups, override);
+    } else {
+      selector.clearSelectionOverrides(rendererIndex);
+    }
   }
 
   /**

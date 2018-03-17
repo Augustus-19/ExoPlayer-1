@@ -689,6 +689,8 @@ public final class C {
    */
   public static final int MSG_SET_SCALING_MODE = 4;
 
+  public static final int MSG_SET_SCALING_MODE_CHANGE = 5;
+
   /**
    * Applications or extensions may define custom {@code MSG_*} constants that can be passed to
    * {@link Renderer}s. These custom constants must be greater than or equal to this value.

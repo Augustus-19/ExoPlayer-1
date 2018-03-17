@@ -27,12 +27,14 @@ import android.graphics.RectF;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.View;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -224,6 +226,9 @@ public class PlayerView extends FrameLayout {
   private boolean controllerHideDuringAds;
   private boolean controllerHideOnTouch;
   private int textureViewRotation;
+  private static String TAG = "Kiran-playerView";
+  //mosaic
+  private static int mCroppingIndex = -1;
 
   public PlayerView(Context context) {
     this(context, null);
@@ -261,7 +266,9 @@ public class PlayerView extends FrameLayout {
     boolean useArtwork = true;
     int defaultArtworkId = 0;
     boolean useController = true;
-    int surfaceType = SURFACE_TYPE_SURFACE_VIEW;
+	//mosic
+    int surfaceType = SURFACE_TYPE_TEXTURE_VIEW;
+    // kiran
     int resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT;
     int controllerShowTimeoutMs = PlayerControlView.DEFAULT_SHOW_TIMEOUT_MS;
     boolean controllerHideOnTouch = true;
@@ -936,6 +943,57 @@ public class PlayerView extends FrameLayout {
     aspectRatioFrame.setResizeMode(resizeMode);
   }
 
+  //kiran
+
+  public void changeView(int croppingIndex){
+    mCroppingIndex = croppingIndex;
+    Log.v("Kiran-PlayerView","croppingIndex =>"+croppingIndex);
+   /*
+    if (surfaceView instanceof TextureView && surfaceView != null){
+      applyTextureViewRotationMosaic((TextureView) surfaceView,croppingIndex);
+    }*/
+
+  }
+
+
+
+
+
+  /** Applies a texture rotation to a {@link TextureView}. */
+  private static void applyTextureViewRotationMosaic(TextureView textureView) {
+    float[][] croppingPositions = {{0,0},{0.5f,0},{0,0.5f},{0.5f,0.5f}};
+
+    float textureViewWidth = textureView.getWidth();
+    float textureViewHeight = textureView.getHeight();
+
+    Log.v("Kiran-Playerview","textureViewWidth:"+textureViewWidth+"  textureViewHeight:"+textureViewHeight);
+
+    if(mCroppingIndex == -1){
+      return;
+    }
+
+    if (textureViewWidth == 0 || textureViewHeight == 0 ) {
+      textureView.setTransform(null);
+    } else {
+      Matrix transformMatrix = new Matrix();
+
+     transformMatrix.postTranslate(
+             -croppingPositions[mCroppingIndex][0]*textureViewWidth,-croppingPositions[mCroppingIndex][1]*textureViewHeight);// half
+      transformMatrix.postScale(2,2);
+
+      textureView.setTransform(transformMatrix);
+    }
+  }
+/*
+
+  @Override
+  protected void onConfigurationChanged(Configuration newConfig) {
+    super.onConfigurationChanged(newConfig);
+    Log.v(TAG,"onConfigurationChanged");
+    applyTextureViewRotationMosaic((TextureView) surfaceView,mCroppingIndex);
+  }
+*/
+
   /** Applies a texture rotation to a {@link TextureView}. */
   private static void applyTextureViewRotation(TextureView textureView, int textureViewRotation) {
     float textureViewWidth = textureView.getWidth();
@@ -1013,7 +1071,8 @@ public class PlayerView extends FrameLayout {
           // So add an OnLayoutChangeListener to apply rotation after layout step.
           surfaceView.addOnLayoutChangeListener(this);
         }
-        applyTextureViewRotation((TextureView) surfaceView, textureViewRotation);
+        //applyTextureViewRotation((TextureView) surfaceView, textureViewRotation);
+        applyTextureViewRotationMosaic((TextureView) surfaceView);
       }
 
       contentFrame.setAspectRatio(videoAspectRatio);

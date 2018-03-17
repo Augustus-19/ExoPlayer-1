@@ -43,6 +43,11 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:visibility="gone"/>
+    <Button
+        android:id="@+id/play_next_video"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="@string/play_next" />
 
   </LinearLayout>
 
